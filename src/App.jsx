@@ -1,8 +1,9 @@
 import React from "react";
 import logo1 from '../src/1.gif';
-import logo2 from '../src/2.gif';
-import logo3 from '../src/30.gif';
+import logo2 from '../src/22.gif';
+import logo3 from '../src/12.gif';
 import logo4 from '../src/44.gif';
+import logo5 from '../src/38.gif'
 import { createGlobalStyle } from 'styled-components';
 import { Container, Row, Col, Filler, Badge } from '@sberdevices/plasma-ui/components/Grid';
 import { Button } from '@sberdevices/plasma-ui';
@@ -33,10 +34,13 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
     console.log('constructor');
-
+    
     this.state = {
       notes: [],
       logo: logo1,
+      foodLevel: 100,
+      sleepLevel: 100,
+      playLevel: 100,
     }
     this.Change_img = this.Change_img.bind(this);
 
@@ -55,7 +59,55 @@ export class App extends React.Component {
 
   componentDidMount() {
     console.log('componentDidMount');
+    setInterval(() =>
+    {this.setState({ foodLevel: this.state.foodLevel=-5, sleepLevel: this.state.sleepLevel=-3, playLevel: this.state.playLevel=-4 }); this.didTamagatchiDie();
+    }, 1000);
   }
+  hungerDrain()
+  {
+    setInterval(() =>
+    {this.foodLevel-=5; this.didTamagatchiDie();
+    }, 1000);
+  }
+
+  sleepDrain()
+  {
+    setInterval(() =>
+    {this.sleepLevel-=2; this.didTamagatchiDie();
+    }, 1000);
+  }
+
+  playDrain()
+  {
+    setInterval(() =>
+    {this.playLevel-=3; this.didTamagatchiDie();
+    }, 1000);
+  }
+
+  feed() {
+    this.foodLevel = 100;
+    
+  }
+
+  sleep() {
+    this.sleepLevel = 100;
+  }
+
+  play() {
+    this.playLevel = 100;
+  }
+
+
+  didTamagatchiDie()
+  {
+    if(this.foodLevel === 0 && this.sleepLevel === 0 && this.playLevel === 0)
+    {
+      this.setState({ logo:  logo5});
+      return true;
+    }
+    else return false;
+  }
+
 
   prepareTamagotchiCreation(event) {
     event.preventDefault()
@@ -88,13 +140,13 @@ export class App extends React.Component {
     if (action) {
       switch (action.type) {
         case 'add_note':
-          return this.add_note(action);
+          return this.Change_img(1);
 
         case 'done_note':
-          return this.done_note(action);
+          return this.Change_img(2);
 
         case 'delete_note':
-          return this.delete_note(action);
+          return this.Change_img(3);
 
         default:
           throw new Error();
@@ -135,42 +187,86 @@ export class App extends React.Component {
   }
 
   Change_img(value){
-    const newLogo = this.state.logo == logo1 ? logo2 : logo1;
     switch (value) {
       case 1:
         this.setState({ logo:  logo2});
+        setTimeout(() => {this.setState({ logo:  logo1}); }, 4000);
+        this.feed();
         //Здесь выполняются инструкции, если результат выражения равен value1
         break;
       case 2:
         this.setState({ logo:  logo3});
+        setTimeout(() => {this.setState({ logo:  logo1}); }, 5000);
+        this.play();
         //Инструкции, соответствующие value2
         break;
       case 3:
-        //Инструкции, соответствующие значению valueN
         this.setState({ logo:  logo4});
-        //statementsN
+        setTimeout(() => {this.setState({ logo:  logo1}); }, 100000);
+        this.sleep();
         break;
       default:
-        //Здесь находятся инструкции, которые выполняются при отсутствии соответствующего значения
-        //statements_def
+        this.setState({ logo:  logo1});
         break;
     }
-    const newlogo = this.state.logo[1];
-
-    
 
   }
 
   render() {
     console.log('render');
     
+    const f = this.state.foodLevel*4;
+    const p = this.state.playLevel*4;
+    const s = this.state.sleepLevel*4;
     return (
-      <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+      <div >
         
-        <h1> Sbercat </h1>
+        <h1 > Sbercat </h1>
+
         
         <img id = "img" src={this.state.logo} class="rounded mx-auto d-block"  style={{width: 400, height:400 }}/>
         
+        <div class="rounded" style={{
+        position: 'absolute',
+        width: f+'px', // `${v}px`
+        left: '400px',
+        top: '100px',
+        height: '35px',
+        backgroundColor: 'green',
+        }}> </div>
+        <h1 style={{
+        position: 'absolute',
+        left: '850px',
+        top: '77px',
+        }}> Сытость </h1>
+        <div class="rounded" style={{
+        position: 'absolute',
+        width: p+'px', // `${v}px`
+        left: '400px',
+        top: '200px',
+        height: '35px',
+        backgroundColor: 'green',
+        }}> </div>
+        <h1 style={{
+        position: 'absolute',
+        left: '850px',
+        top: '177px',
+        }}> Счастье </h1>
+        <div class="rounded" style={{
+        position: 'absolute',
+        width: s+'px', // `${v}px`
+        left: '400px',
+        top: '300px',
+        height: '35px',
+        backgroundColor: 'green',
+        }}> </div>
+        <h1 style={{
+        position: 'absolute',
+        left: '850px',
+        top: '277px',
+        }}> Бодрость </h1>
+
+
         <Button
         text='Покормить!'
         size='l'
@@ -200,7 +296,5 @@ export class App extends React.Component {
       
     )
   }
-
-
 }
 

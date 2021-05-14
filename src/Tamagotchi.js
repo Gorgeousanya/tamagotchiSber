@@ -16,6 +16,18 @@ export class Tamagotchi extends React.Component {
     this.foodLevel = 100;
     this.sleepLevel = 100;
     this.playLevel = 100;
+    
+  }
+
+  componentDidMount() {
+    // setInterval
+    this.hungerDrain();
+    this.playDrain();
+    this.sleepDrain();
+  }
+
+  componentWillUnmount() {
+    // clearInterval
   }
 
   hungerDrain()
@@ -41,6 +53,7 @@ export class Tamagotchi extends React.Component {
 
   feed() {
     this.foodLevel += 20;
+    
   }
 
   sleep() {
@@ -65,7 +78,6 @@ export class Tamagotchi extends React.Component {
     console.log('render');
     return (
         <div>
-            наш компонент
             
         </div>
     )
